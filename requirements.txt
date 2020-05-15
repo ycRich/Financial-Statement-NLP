@@ -1,0 +1,10 @@
+alphalens
+nltk
+numpy
+ratelimit
+requests
+scikit-learn
+six
+tqdm
+wordcloud
+bs4
