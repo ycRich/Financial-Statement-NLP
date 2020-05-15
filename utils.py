@@ -77,8 +77,8 @@ def plot_sentiment_count(sentiment_count, dates):
     plt.show()
 
 
-def plot_wordcloud(text, stopwords):
-    wc = WordCloud(stopwords=stopwords)
+def plot_wordcloud(text, stopwords=None):
+    wc = WordCloud(collocations=False, stopwords=stopwords)
     wc.generate(text)
 
     plt.figure()
@@ -108,15 +108,14 @@ def get_sec_data(cik, doc_type, sec_api, start=0, count=60):
 
 def load_cik_lookup():
     try:
-        with open('cik_lookup', 'rb') as file:
+        with open(os.path.join(os.getcwd(), 'data/cik_lookup'), 'rb') as file:
             cik_lookup = pickle.load(file)
     except:
-        cwd = os.getcwd()
-        df = pd.read_csv(os.path.join(cwd, 'cik_ticker.csv'), sep='|', dtype=str)
+        df = pd.read_csv(os.path.join(os.getcwd(), 'data/cik_ticker.csv'), sep='|', dtype=str)
         df['CIK'] = df['CIK'].str.zfill(10)
         cik_lookup = {row['Ticker']: row['CIK'] for i, row in df.iterrows()}
 
-        with open('cik_lookup', 'wb') as file:
+        with open(os.path.join(os.getcwd(), 'data/cik_lookup'), 'wb') as file:
             pickle.dump(cik_lookup, file)
     return cik_lookup
 
@@ -190,7 +189,7 @@ def lemmatize_words(words):
 
 def get_sentiment_df():
     try:
-        with open('sentiment_df', 'rb') as file:
+        with open(os.path.join(os.getcwd(),'data/sentiment_df'), 'rb') as file:
             sentiment_df = pickle.load(file)
     except:
         sentiments = ['negative', 'positive', 'uncertainty', 'litigious', 'constraining', 'interesting']
@@ -207,7 +206,7 @@ def get_sentiment_df():
         sentiment_df['word'] = lemmatize_words(sentiment_df['word'].str.lower())
         sentiment_df = sentiment_df.drop_duplicates('word')
 
-        with open('sentiment_df', 'wb') as file:
+        with open(os.path.join(os.getcwd(),'data/sentiment_df'), 'wb') as file:
             pickle.dump(sentiment_df, file)
     return sentiment_df
 
